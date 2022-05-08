@@ -1,2 +1,2 @@
-# pline-app
+# Pline App
 P-Line Backend
