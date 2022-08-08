@@ -25,7 +25,7 @@ const Header = (props) => {
         .catch((error) => {
           toast.error(
             "An error occurred while executing your request. Contact the system administrator\n" +
-              error
+            error
           );
         });
     }
@@ -64,6 +64,20 @@ const Header = (props) => {
                   Sip Users
                 </NavDropdown.Item>
               </NavDropdown>
+              <NavDropdown title="Call Routes" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to="/call-route/inbound-routes/index">
+                  Inbound Routes
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item as={Link} to="/call-route/global-outbound-routes/index">
+                  Global Outbound Routes
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/call-route/specific-outbound-routes/index">
+                  Specific Outbound Routes
+                </NavDropdown.Item>
+
+              </NavDropdown>
+
               <Nav.Link onClick={apply}>Apply</Nav.Link>
             </Nav>
 

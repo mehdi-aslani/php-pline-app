@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
+import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import YiiGridView from "../../grid-view/YiiGridView";
@@ -55,14 +56,14 @@ const SipUsers = () => {
       id: "id",
       value: (value) => {
         return (
-          <Button
+          <p
+            className="edit"
             onClick={() => {
               Edit(value);
             }}
           >
-            Edit
-          </Button>
-        );
+            <PencilSquare />
+          </p>);
       },
     },
     {
@@ -70,14 +71,15 @@ const SipUsers = () => {
       id: "id",
       value: (value) => {
         return (
-          <Button
+          <p
+            className="delete"
             variant="danger"
             onClick={() => {
               Delete(value);
             }}
           >
-            Delete
-          </Button>
+            <Trash />
+          </p>
         );
       },
     },

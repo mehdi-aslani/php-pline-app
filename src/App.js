@@ -28,6 +28,12 @@ import SystemVariableForm from "./component/system-variables/SystemVariableForm"
 import PlineCookies from "./component/services/PlineCookies";
 import SipProfiles from "./component/sip/sip-profiles/SipProfiles";
 import SipTrunks from "./component/sip/sip-trunks/SipTrunks";
+import SpecificOutboundRoutesForm from "./component/call-route/specific-outbound-routes/SpecificOutboundRoutesForm";
+import InboundRoutes from "./component/call-route/inbound-routes/InboundRoutes";
+import GlobalOutboundRoutes from "./component/call-route/global-outbound-routes/GlobalOutboundRoutes";
+import GlobalOutboundRoutesForm from "./component/call-route/global-outbound-routes/GlobalOutboundRoutesForm";
+import InboundRoutesForm from "./component/call-route/inbound-routes/InboundRoutesForm";
+import SpecificOutboundRoutes from "./component/call-route/specific-outbound-routes/SpecificOutboundRoutes";
 const App = () => {
   const navigate = useNavigate();
   const [, setState] = useState({ menuHide: false });
@@ -80,6 +86,15 @@ const App = () => {
           <Route element={<PrivateRoute LogoutAction={logout} />}>
             <Route exact path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/call-route/specific-outbound-routes/index" element={<SpecificOutboundRoutes/>} />
+            <Route path="/call-route/specific-outbound-routes/create" element={<SpecificOutboundRoutesForm />} />
+            <Route path="/call-route/specific-outbound-routes/edit/:id" element={<SpecificOutboundRoutesForm />} />
+            <Route path="/call-route/inbound-routes/index" element={<InboundRoutes />} />
+            <Route path="/call-route/inbound-routes/create" element={<InboundRoutesForm />} />
+            <Route path="/call-route/inbound-routes/edit/:id" element={<InboundRoutesForm />} />
+            <Route path="/call-route/global-outbound-routes/index" element={<GlobalOutboundRoutes />} />
+            <Route path="/call-route/global-outbound-routes/create" element={<GlobalOutboundRoutesForm />} />
+            <Route path="/call-route/global-outbound-routes/edit/:id" element={<GlobalOutboundRoutesForm />} />
             <Route path="/contact/create" element={<NewContact />} />
             <Route path="/contact/edit/:id" element={<NewContact />} />
             <Route path="/contact/index" element={<ListContact />} />
