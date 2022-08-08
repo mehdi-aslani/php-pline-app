@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import { PencilSquare, Trash, UiChecks } from "react-bootstrap-icons";
+import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import YiiGridView from "../../grid-view/YiiGridView";
-import { deleteRequest, getRequest } from "../../services/PlineTools";
+import RestApi from "../../services/RestApi";
 
-const EnableDisable = [
-  { value: 1, label: "Enable" },
-  { value: 0, label: "Disable" },
-];
-
-const SipProfilesList = () => {
+const SipProfiles = () => {
   const [state, setState] = useState({ items: [] });
   const [searchParams] = useState({});
   const [sortParams, setSortParams] = useState({ sort: "" });
@@ -39,25 +34,19 @@ const SipProfilesList = () => {
       label: "Enable",
       id: "enable",
       search: true,
+      filter: [
+        {
+          label: "Enable",
+          value: "1"
+        },
+        {
+          label: "Disable",
+          value: "0"
+        }
+      ],
       sort: true,
       value: (v) => {
         return v ? "Enable" : "Disable";
-      },
-    },
-    {
-      label: "Profile Details",
-      id: "id",
-      value: (value) => {
-        return (
-          <p
-            className="view"
-            onClick={() => {
-              navigate("/sip-profile-details/" + value);
-            }}
-          >
-            <UiChecks />
-          </p>
-        );
       },
     },
     {
@@ -104,21 +93,21 @@ const SipProfilesList = () => {
 
     if (sortParams.sort.trim() !== "") searchUrl += `&sort=${sortParams.sort}`;
 
-    getRequest(`${href}${searchUrl}`)
+    RestApi.getRequest(`${href}${searchUrl}`)
       .then((data) => {
         setState(data.data);
       })
       .catch((error) => {
         toast.error(
           "An error occurred while executing your request. Contact the system administrator\n" +
-            error
+          error
         );
       });
   };
 
   const Delete = (id) => {
     if (window.confirm("Are you sure you want to delete this Item?")) {
-      deleteRequest("/sip-profiles/" + id)
+      RestApi.deleteRequest("/sip-profiles/" + id)
         .then((result) => {
           getData();
         })
@@ -141,7 +130,7 @@ const SipProfilesList = () => {
   }, []);
 
   const search = (f, v) => {
-    searchParams["TblSipProfilesSerach[" + f + "]"] = v;
+    searchParams["TblSipProfilesSearch[" + f + "]"] = v;
     getData();
   };
 
@@ -155,14 +144,14 @@ const SipProfilesList = () => {
       <Row>
         <Col>
           <Button as={Link} to="/sip-profiles/create">
-            New Variable
+            New SIP Profile
           </Button>
         </Col>
       </Row>
       <hr />
       <Row>
         <Col>
-          <h4>List of SIP ProfileS</h4>
+          <h4>List of SIP Profiles</h4>
         </Col>
       </Row>
       <Row>
@@ -207,4 +196,4 @@ const SipProfilesList = () => {
   );
 };
 
-export default SipProfilesList;
+export default SipProfiles;

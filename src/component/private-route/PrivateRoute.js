@@ -1,15 +1,15 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Header from "../layout/Header";
-import { getCookies } from "../services/PlineTools";
+import PlineCookies from "../services/PlineCookies";
 
 const PrivateRoute = (props) => {
-  return getCookies("auth") ? (
+  return PlineCookies.getCookies("auth") ? (
     <>
       <Header
         UserName={
-          getCookies("username").charAt(0).toUpperCase() +
-          getCookies("username").slice(1)
+          PlineCookies.getCookies("username").charAt(0).toUpperCase() +
+          PlineCookies.getCookies("username").slice(1)
         }
         LogoutAction={() => {
           if (window.confirm("Are you sure you want to leave?"))

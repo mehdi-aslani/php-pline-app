@@ -8,16 +8,15 @@ import {
 } from "react-bootstrap-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import GridView from "../../grid-view/GridView";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import YiiGridView from "../../grid-view/YiiGridView";
+import RestApi from "../../services/RestApi";
 
-const SipTrunkList = () => {
-  const [state, setState] = useState({ content: [] });
+const SipTrunks = () => {
+  const [state, setState] = useState({ items: [] });
   const [sortParams, setSortParams] = useState({ sort: "" });
   const [searchParams] = useState({});
   const navigate = useNavigate();
 
-  const pageSize = 10;
   const columns = [
     {
       label: "Row",
@@ -52,13 +51,16 @@ const SipTrunkList = () => {
       label: "Enable",
       id: "enable",
       sort: true,
+      search: true,
+      filter: [
+        { value: 0, label: "Disable" },
+        { value: 1, label: "Enable" },
+      ],
       value: (value) => {
         if (value) {
-          return (
-            <CheckSquare style={{ color: "purple", fontWeight: "bold" }} />
-          );
+          return "Enable";
         } else {
-          return <XSquare style={{ color: "red", fontWeight: "bold" }} />;
+          return "Disable";
         }
       },
     },
@@ -97,26 +99,30 @@ const SipTrunkList = () => {
     },
   ];
 
-  const getData = (page = 0, size = pageSize) => {
+  const getData = (href = "") => {
+    if (href === "") {
+      href = "/sip-trunks?";
+    }
     let searchUrl = "&" + new URLSearchParams(searchParams).toString();
+    if (searchUrl === "&") searchUrl = "";
 
     if (sortParams.sort.trim() !== "") searchUrl += `&sort=${sortParams.sort}`;
 
-    getRequest(`/sip-trunks/index?page=${page}&size=${size}${searchUrl}`)
-      .then((data) => {
-        setState(data);
+    RestApi.getRequest(`${href}${searchUrl}`)
+      .then((result) => {
+        setState(result.data);
       })
       .catch((error) => {
         toast.error(
           "An error occurred while executing your request. Contact the system administrator\n" +
-            error
+          error
         );
       });
   };
 
   const Delete = (id) => {
-    if (window.confirm("Are you sure you want to delete this Trunk?")) {
-      postRequest("/sip-trunks/delete", { id: id }).then((result) => {
+    if (window.confirm("Are you sure you want to delete this Item?")) {
+      RestApi.deleteRequest("/sip-trunks/" + id).then((result) => {
         if (result.error) {
           toast.error("An error occurred while deleting the Trunk");
         } else {
@@ -136,7 +142,7 @@ const SipTrunkList = () => {
   }, []);
 
   const search = (f, v) => {
-    searchParams[f] = v;
+    searchParams["TblSipTrunksSearch[" + f + "]"] = v;
     getData();
   };
 
@@ -146,11 +152,11 @@ const SipTrunkList = () => {
   };
 
   return (
-    <div>
+    <>
       <Row>
         <Col>
           <Button as={Link} to="/sip-trunks/create">
-            New Trunk
+            New SIP Trunk
           </Button>
         </Col>
       </Row>
@@ -162,39 +168,44 @@ const SipTrunkList = () => {
       </Row>
       <Row>
         <Col>
-          <GridView
+          <YiiGridView
             Columns={columns}
-            Data={state.content}
+            Data={state.items}
             Events={{
               first: () => {
-                getData(0);
+                if (state._links.first?.href === undefined) return;
+                getData(state._links.first?.href);
               },
               pre: () => {
-                if (state.pageable?.pageNumber - 1 >= 0)
-                  getData(state.pageable?.pageNumber - 1);
+                if (state._links.prev?.href === undefined) return;
+                getData(state._links.prev?.href);
+              },
+              self: () => {
+                if (state._links.self?.href === undefined) return;
+                getData(state._links.self?.href);
               },
               next: () => {
-                if (state?.totalPages > state.pageable?.pageNumber + 1)
-                  getData(state.pageable?.pageNumber + 1);
+                if (state._links.next?.href === undefined) return;
+                getData(state._links.next?.href);
               },
               last: () => {
-                getData(state?.totalPages - 1);
+                if (state._links.last?.href === undefined) return;
+                getData(state._links.last?.href);
               },
             }}
             Pagination={{
-              totalElements: state?.totalElements,
-              totalPages: state?.totalPages,
-              size: state.pageable?.pageSize,
-              offset: state.pageable?.offset,
-              pageNumber: state.pageable?.pageNumber,
+              totalCount: state._meta?.totalCount,
+              pageCount: state._meta?.pageCount,
+              currentPage: state._meta?.currentPage,
+              perPage: state._meta?.perPage,
             }}
             SearchEvent={search}
             SortEvent={sort}
           />
         </Col>
       </Row>
-    </div>
+    </>
   );
 };
 
-export default SipTrunkList;
+export default SipTrunks;

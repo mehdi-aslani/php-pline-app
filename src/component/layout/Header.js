@@ -2,8 +2,9 @@ import React from "react";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { PersonCircle } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
-import { getCookies, postRequest } from "../services/PlineTools";
 import { toast } from "react-toastify";
+import PlineCookies from "../services/PlineCookies";
+import RestApi from "../services/RestApi";
 import "./Header.css";
 
 const Header = (props) => {
@@ -15,7 +16,9 @@ const Header = (props) => {
 
   const apply = () => {
     if (window.confirm("Are you sure you want to apply the changes?")) {
-      postRequest("/configs/apply", { token: getCookies("token") })
+      RestApi.postRequest("/configs/apply", {
+        token: PlineCookies.getCookies("token"),
+      })
         .then((result) => {
           toast.info("Apply configuration successful");
         })
@@ -54,7 +57,7 @@ const Header = (props) => {
                   SIP Trunks
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item as={Link} to="/contact/import">
+                <NavDropdown.Item as={Link} to="/sip-user-groups/index">
                   Sip User Groups
                 </NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/sip-users/index">

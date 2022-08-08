@@ -22,7 +22,7 @@ const YiiGridView = (props) => {
             <span>of</span>{" "}
             {props.Pagination.currentPage * props.Pagination.perPage}
             {" ["}
-            <span>Max Rows</span> {props.Pagination.totalCount}
+            <span>Max Row</span> {props.Pagination.totalCount}
             {"]"}
           </p>
         </Col>
@@ -73,14 +73,32 @@ const YiiGridView = (props) => {
                 {props.Columns.map((v, i) => {
                   return (
                     <td key={i}>
-                      <input
-                        hidden={v.search !== true}
-                        type="text"
-                        className="form-control"
-                        onChange={(e) => {
-                          props?.SearchEvent(v.id, e.target.value);
-                        }}
-                      />
+                      {v.search &&
+                        (v.filter === undefined ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            onChange={(e) => {
+                              props?.SearchEvent(v.id, e.target.value);
+                            }}
+                          />
+                        ) : (
+                          <select
+                            className="form-select"
+                            onChange={(e) => {
+                              props?.SearchEvent(v.id, e.target.value);
+                            }}
+                          >
+                            <option></option>
+                            {v.filter.map((opt, oi) => {
+                              return (
+                                <option key={"op" + oi} value={opt.value}>
+                                  {opt.label}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        ))}
                     </td>
                   );
                 })}
@@ -118,13 +136,13 @@ const YiiGridView = (props) => {
               disabled={props.Events.first === undefined}
               onClick={props.Events.first}
             >
-              {"First Page"}
+              {"First "}
             </Pagination.Item>
             <Pagination.Item
               disabled={props.Events.pre === undefined}
               onClick={props.Events.pre}
             >
-              {"Previous Page"}
+              {"Previous "}
             </Pagination.Item>
             <Pagination.Item
               disabled={props.Events.self === undefined}
@@ -138,13 +156,13 @@ const YiiGridView = (props) => {
               disabled={props.Events.next === undefined}
               onClick={props.Events.next}
             >
-              {"Next Page"}
+              {"Next "}
             </Pagination.Item>
             <Pagination.Item
               disabled={props.Events.last === undefined}
               onClick={props.Events.last}
             >
-              {"Last Page"}
+              {"Last"}
             </Pagination.Item>
           </Pagination>
         </Col>

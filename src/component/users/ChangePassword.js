@@ -2,31 +2,27 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useCookies } from "react-cookie";
+
 import "./ChangePassword.css";
+import PlineCookies from "../services/PlineCookies";
 
 function ChangePassword() {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["pline-hotkey"]);
   const [state] = useState({
     oldPass: "",
     newPass: "",
     repNewPass: "",
-    token: cookies.token,
-    username: cookies.username,
   });
 
   const saveData = (e) => {
     e.preventDefault();
-    state.token = cookies.token;
-    state.username = cookies.username;
     window.global.post("/users/change-password", state).then((result) => {
       if (result.error) {
         result.errors.forEach((v) => {
           toast.error(v);
         });
       } else {
-        setCookie("token", result.token);
+        PlineCookies.setCookie("token", result.token);
         toast.success("Your password was successfully changed");
         navigate("/home");
       }

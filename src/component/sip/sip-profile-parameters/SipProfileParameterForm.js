@@ -2,14 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Col, Container, Form, Row, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import {
-  getRequest,
-  patchRequest,
-  postRequest,
-  stringToLabel,
-} from "../../services/PlineTools";
+import RestApi from "../../services/RestApi";
+import { Tools } from "../../services/Tools";
 
-const SystemVariables = () => {
+const SipProfileParameters = () => {
   const [state, setState] = useState({
     name: "",
     value: "",
@@ -23,7 +19,7 @@ const SystemVariables = () => {
     let id = params.id;
     if (id !== undefined) {
       const url = "/spps/" + id;
-      getRequest(url)
+      RestApi.getRequest(url)
         .then((result) => {
           setState(result.data);
         })
@@ -37,9 +33,9 @@ const SystemVariables = () => {
     e.preventDefault();
     let req = null;
     if (params.id === undefined) {
-      req = postRequest("/spps", state);
+      req = RestApi.postRequest("/spps", state);
     } else {
-      req = patchRequest("/spps/" + params.id, state);
+      req = RestApi.patchRequest("/spps/" + params.id, state);
     }
 
     req
@@ -73,7 +69,7 @@ const SystemVariables = () => {
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3" controlId="name">
-              <Form.Label>{stringToLabel("name")}</Form.Label>
+              <Form.Label>{Tools.stringToLabel("name")}</Form.Label>
               <Form.Control
                 type="text"
                 required={true}
@@ -88,7 +84,7 @@ const SystemVariables = () => {
           </Col>
           <Col md={6}>
             <Form.Group className="mb-3" controlId="value">
-              <Form.Label>{stringToLabel("value")}</Form.Label>
+              <Form.Label>{Tools.stringToLabel("Default Value")}</Form.Label>
               <Form.Control
                 type="text"
                 required
@@ -105,7 +101,7 @@ const SystemVariables = () => {
         <Row>
           <Col md={12}>
             <Form.Group className="mb-3" controlId="desc">
-              <Form.Label>{stringToLabel("description")}</Form.Label>
+              <Form.Label>{Tools.stringToLabel("description")}</Form.Label>
               <Form.Control
                 as="textarea"
                 maxLength={1024}
@@ -139,4 +135,4 @@ const SystemVariables = () => {
   );
 };
 
-export default SystemVariables;
+export default SipProfileParameters;

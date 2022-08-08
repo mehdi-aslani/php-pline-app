@@ -3,7 +3,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import GridView from "../../grid-view/GridView";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import RestApi from "../../services/RestApi";
 
 const UserGroupList = () => {
   const [state, setState] = useState({ content: [] });
@@ -63,7 +63,9 @@ const UserGroupList = () => {
   const getData = (page = 0, size = pageSize) => {
     const searchUrl = new URLSearchParams(searchParams).toString();
 
-    getRequest(`/sip-user-groups/index?page=${page}&size=${size}&${searchUrl}`)
+    RestApi.getRequest(
+      `/sip-user-groups/index?page=${page}&size=${size}&${searchUrl}`
+    )
       .then((data) => {
         setState(data);
       })
@@ -77,14 +79,16 @@ const UserGroupList = () => {
 
   const Delete = (id) => {
     if (window.confirm("Are you sure you want to delete this User Group?")) {
-      postRequest("/sip-user-groups/delete", { id: id }).then((result) => {
-        if (result.delete) {
-          toast.success("The User Group was deleted");
-          getData();
-        } else {
-          toast.success("An error occurred while deleting the User Group");
+      RestApi.postRequest("/sip-user-groups/delete", { id: id }).then(
+        (result) => {
+          if (result.delete) {
+            toast.success("The User Group was deleted");
+            getData();
+          } else {
+            toast.success("An error occurred while deleting the User Group");
+          }
         }
-      });
+      );
       getData();
     }
   };

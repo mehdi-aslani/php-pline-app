@@ -4,11 +4,8 @@ import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import YiiGridView from "../grid-view/YiiGridView";
-import {
-  deleteRequest,
-  getRequest,
-  stringToLabel,
-} from "../services/PlineTools";
+import RestApi from "../services/RestApi";
+import { Tools } from "../services/Tools";
 
 const SystemVariables = () => {
   const [state, setState] = useState({ items: [] });
@@ -23,19 +20,19 @@ const SystemVariables = () => {
       search: false,
     },
     {
-      label: stringToLabel("name"),
+      label: Tools.stringToLabel("name"),
       id: "name",
       search: true,
       sort: true,
     },
     {
-      label: stringToLabel("value"),
+      label: Tools.stringToLabel("value"),
       id: "value",
       search: true,
       sort: true,
     },
     {
-      label: stringToLabel("description"),
+      label: Tools.stringToLabel("description"),
       id: "desc",
       search: true,
       sort: true,
@@ -84,7 +81,7 @@ const SystemVariables = () => {
 
     if (sortParams.sort.trim() !== "") searchUrl += `&sort=${sortParams.sort}`;
 
-    getRequest(`${href}${searchUrl}`)
+    RestApi.getRequest(`${href}${searchUrl}`)
       .then((data) => {
         setState(data.data);
       })
@@ -98,7 +95,7 @@ const SystemVariables = () => {
 
   const Delete = (id) => {
     if (window.confirm("Are you sure you want to delete this Item?")) {
-      deleteRequest("/variables/" + id).then((result) => {
+      RestApi.deleteRequest("/variables/" + id).then((result) => {
         if (result.error) {
           toast.error("An error occurred while deleting the Trunk");
         } else {

@@ -4,11 +4,8 @@ import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import YiiGridView from "../../grid-view/YiiGridView";
-import {
-  deleteRequest,
-  getRequest,
-  stringToLabel,
-} from "../../services/PlineTools";
+import RestApi from "../../services/RestApi";
+import { Tools } from "../../services/Tools";
 
 const SipProfileParameters = () => {
   const [state, setState] = useState({ items: [] });
@@ -23,19 +20,19 @@ const SipProfileParameters = () => {
       search: false,
     },
     {
-      label: stringToLabel("name"),
+      label: Tools.stringToLabel("name"),
       id: "name",
       search: true,
       sort: true,
     },
     {
-      label: stringToLabel("value"),
+      label: Tools.stringToLabel("Default Value"),
       id: "value",
       search: true,
       sort: true,
     },
     {
-      label: stringToLabel("description"),
+      label: Tools.stringToLabel("description"),
       id: "desc",
       search: true,
       sort: true,
@@ -84,7 +81,7 @@ const SipProfileParameters = () => {
 
     if (sortParams.sort.trim() !== "") searchUrl += `&sort=${sortParams.sort}`;
 
-    getRequest(`${href}${searchUrl}`)
+    RestApi.getRequest(`${href}${searchUrl}`)
       .then((data) => {
         data = data.data;
         setState(data);
@@ -99,7 +96,7 @@ const SipProfileParameters = () => {
 
   const Delete = (id) => {
     if (window.confirm("Are you sure you want to delete this Item?")) {
-      deleteRequest("/spps/" + id).then((result) => {
+      RestApi.deleteRequest("/spps/" + id).then((result) => {
         if (result.error) {
           toast.error("An error occurred while deleting the Trunk");
         } else {

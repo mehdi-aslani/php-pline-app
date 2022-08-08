@@ -2,12 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Col, Container, Form, Row, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import {
-  getRequest,
-  patchRequest,
-  postRequest,
-  stringToLabel,
-} from "../services/PlineTools";
+import RestApi from "../services/RestApi";
+import { Tools } from "../services/Tools";
 
 const SystemVariableForm = () => {
   const [state, setState] = useState({
@@ -23,7 +19,7 @@ const SystemVariableForm = () => {
     let id = params.id;
     if (id !== undefined) {
       const url = "/variables/" + id;
-      getRequest(url)
+      RestApi.getRequest(url)
         .then((result) => {
           setState(result.data);
         })
@@ -37,9 +33,9 @@ const SystemVariableForm = () => {
     e.preventDefault();
     let req = null;
     if (params.id === undefined) {
-      req = postRequest("/variables", state);
+      req = RestApi.postRequest("/variables", state);
     } else {
-      req = patchRequest("/variables/" + params.id, state);
+      req = RestApi.patchRequest("/variables/" + params.id, state);
     }
 
     req
@@ -73,7 +69,7 @@ const SystemVariableForm = () => {
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3" controlId="name">
-              <Form.Label>{stringToLabel("name")}</Form.Label>
+              <Form.Label>{Tools.stringToLabel("name")}</Form.Label>
               <Form.Control
                 type="text"
                 required={true}
@@ -88,7 +84,7 @@ const SystemVariableForm = () => {
           </Col>
           <Col md={6}>
             <Form.Group className="mb-3" controlId="value">
-              <Form.Label>{stringToLabel("value")}</Form.Label>
+              <Form.Label>{Tools.stringToLabel("value")}</Form.Label>
               <Form.Control
                 type="text"
                 required
@@ -105,7 +101,7 @@ const SystemVariableForm = () => {
         <Row>
           <Col md={12}>
             <Form.Group className="mb-3" controlId="desc">
-              <Form.Label>{stringToLabel("description")}</Form.Label>
+              <Form.Label>{Tools.stringToLabel("description")}</Form.Label>
               <Form.Control
                 as="textarea"
                 maxLength={1024}

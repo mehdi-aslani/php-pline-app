@@ -3,7 +3,8 @@ import "./Login.css";
 import "../../App.css";
 import Avatar from "./avatar_2x.png";
 import { toast } from "react-toastify";
-import { postRequest, ResponseStatus } from "../services/PlineTools";
+import RestApi from "../services/RestApi";
+import { ResponseStatus } from "../services/Tools";
 
 function Login(props) {
   const [state] = useState({
@@ -14,7 +15,7 @@ function Login(props) {
 
   const Login = (e) => {
     e.preventDefault();
-    postRequest("/users/login", state).then((result) => {
+    RestApi.postRequest("/users/login", state).then((result) => {
       result = result.data;
       console.log(result);
       if (result.status === ResponseStatus.Success) {

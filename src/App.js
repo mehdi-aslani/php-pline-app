@@ -13,51 +13,48 @@ import React, { useState, useEffect } from "react";
 import PrivateRoute from "./component/private-route/PrivateRoute";
 import ChangePassword from "./component/users/ChangePassword";
 import ImportContacts from "./component/contacts/ImportContacts";
-import {
-  getCookies,
-  removeCookies,
-  setCookies,
-} from "./component/services/PlineTools";
-import SipTrunkList from "./component/sip/sip-trunks/SipTrunkList";
+
 import SipTrunkForm from "./component/sip/sip-trunks/SipTrunkForm";
 import UserGroupForm from "./component/sip/sip-user-groups/UserGroupForm";
-import UserGroupList from "./component/sip/sip-user-groups/UserGroupList";
+import UserGroups from "./component/sip/sip-user-groups/UserGroups";
 import SipUserForm from "./component/sip/sip-user/SipUserForm";
-import SipUserList from "./component/sip/sip-user/SipUserList";
-import SipProfilesList from "./component/sip/sip-profiles/SipProfilesList";
+import SipUsers from "./component/sip/sip-user/SipUsers";
 import SipProfileForm from "./component/sip/sip-profiles/SipProfileForm";
 import SipProfileDetails from "./component/sip/sip-profile-details/SipProfileDetails";
 import SipProfileParameters from "./component/sip/sip-profile-parameters/SipProfileParameters";
 import SipProfileParameterForm from "./component/sip/sip-profile-parameters/SipProfileParameterForm";
 import SystemVariables from "./component/system-variables/SystemVariables";
 import SystemVariableForm from "./component/system-variables/SystemVariableForm";
+import PlineCookies from "./component/services/PlineCookies";
+import SipProfiles from "./component/sip/sip-profiles/SipProfiles";
+import SipTrunks from "./component/sip/sip-trunks/SipTrunks";
 const App = () => {
   const navigate = useNavigate();
   const [, setState] = useState({ menuHide: false });
 
   useEffect(() => {
-    setState({ menuHide: getCookies("isAuth") });
+    setState({ menuHide: PlineCookies.getCookies("isAuth") });
   }, []);
 
   const login = (result) => {
-    setCookies("auth", true);
-    setCookies("username", result.username);
-    setCookies("user_id", result.user_id);
-    setCookies("token", result.token);
+    PlineCookies.setCookies("auth", true);
+    PlineCookies.setCookies("username", result.username);
+    PlineCookies.setCookies("user_id", result.user_id);
+    PlineCookies.setCookies("token", result.token);
     setState({});
     navigate("/");
   };
 
   const logout = () => {
-    removeCookies("auth");
-    removeCookies("username");
-    removeCookies("token");
-    removeCookies("user_id");
+    PlineCookies.removeCookies("auth");
+    PlineCookies.removeCookies("username");
+    PlineCookies.removeCookies("token");
+    PlineCookies.removeCookies("user_id");
 
-    setCookies("name", "");
-    setCookies("username", "");
-    setCookies("token", "");
-    setCookies("user_id", "");
+    PlineCookies.setCookies("name", "");
+    PlineCookies.setCookies("username", "");
+    PlineCookies.setCookies("token", "");
+    PlineCookies.setCookies("user_id", "");
 
     setState({});
     navigate("/login");
@@ -66,8 +63,8 @@ const App = () => {
   return (
     <div>
       <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
+        position="top-right"
+        autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -97,12 +94,11 @@ const App = () => {
               path="/variables/edit/:id"
               element={<SystemVariableForm />}
             />
-
             <Route
               path="/sip-profile-details/:id"
               element={<SipProfileDetails />}
             />
-            <Route path="/sip-trunks/index" element={<SipTrunkList />} />
+            <Route path="/sip-trunks/index" element={<SipTrunks />} />
             <Route path="/sip-trunks/create" element={<SipTrunkForm />} />
             <Route path="/sip-trunks/edit/:id" element={<SipTrunkForm />} />
             <Route path="/sip-user-groups/create" element={<UserGroupForm />} />
@@ -110,11 +106,11 @@ const App = () => {
               path="/sip-user-groups/edit/:id"
               element={<UserGroupForm />}
             />
-            <Route path="/sip-user-groups/index" element={<UserGroupList />} />
-            <Route path="/sip-users/index" element={<SipUserList />} />
+            <Route path="/sip-user-groups/index" element={<UserGroups />} />
+            <Route path="/sip-users/index" element={<SipUsers />} />
             <Route path="/sip-users/edit/:id" element={<SipUserForm />} />
             <Route path="/sip-users/create" element={<SipUserForm />} />
-            <Route path="/sip-profiles/index" element={<SipProfilesList />} />
+            <Route path="/sip-profiles/index" element={<SipProfiles />} />
             <Route path="/sip-profiles/create" element={<SipProfileForm />} />
             <Route path="/sip-profiles/edit/:id" element={<SipProfileForm />} />
           </Route>
